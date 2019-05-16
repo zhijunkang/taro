@@ -37,7 +37,7 @@ import {
   GEN_LOOP_COMPID
 } from './constant'
 import { Adapters, setAdapter, Adapter } from './adapter'
-import { Options, setTransformOptions, buildBabelTransformOptions } from './options'
+import { Options, setTransformOptions, buildBabelTransformOptions, setIsNormal, isNormal } from './options'
 import { get as safeGet, cloneDeep } from 'lodash'
 import { isTestEnv } from './env'
 
@@ -180,18 +180,21 @@ function handleThirdPartyComponent (expr: t.ClassMethod | t.ClassProperty) {
 }
 
 export interface Result {
-  template: string
+  template?: string
+  componentProperies?: string[]
+}
+
+interface TransformResult extends Result {
+  ast: t.File
+  code?: string
+  imageSrcs?: string
+  compressedTemplate?: string,
+  sourcemap?: object
   components: {
     name: string,
     path: string,
     type: string
   }[],
-  componentProperies: string[]
-}
-
-interface TransformResult extends Result {
-  code: string,
-  ast: t.File
 }
 
 export default function transform (options: Options): TransformResult {
@@ -226,7 +229,22 @@ export default function transform (options: Options): TransformResult {
   // 原因大概是 babylon.parse 没有生成 File 实例导致 scope 和 path 原型上都没有 `file`
   // 将来升级到 babel@7 可以直接用 parse 而不是 transform
   const ast = parse(code, buildBabelTransformOptions()).ast as t.File
-  if (options.isNormal) {
+  traverse(ast, {
+    JSXElement (p) {
+      setIsNormal(false)
+      p.stop()
+    },
+    ImportDeclaration (path) {
+      const { source, specifiers } = path.node
+      if (source.value === TARO_PACKAGE_NAME) {
+        if (specifiers.some(s => s.local.name === 'Component')) {
+          setIsNormal(false)
+          path.stop()
+        }
+      }
+    }
+  })
+  if (isNormal) {
     if (options.isTyped) {
       const mainClassNode = ast.program.body.find(v => {
         return t.isClassDeclaration(v)
@@ -311,14 +329,11 @@ export default function transform (options: Options): TransformResult {
       if (superClass) {
         try {
           componentProperies = transform({
-            isRoot: false,
             isApp: false,
             code: superClass.code,
             isTyped: true,
-            sourcePath: superClass.sourcePath,
-            outputPath: superClass.sourcePath,
-            sourceDir: options.sourceDir
-          }).componentProperies
+            sourcePath: superClass.sourcePath
+          }).componentProperies!
         } catch (error) {
           //
         }
@@ -664,7 +679,7 @@ export default function transform (options: Options): TransformResult {
   }
 
   if (!mainClass) {
-    throw new Error('未找到 Taro.Component 的类定义')
+    return { ast } as any
   }
 
   mainClass.node.body.body.forEach(handleThirdPartyComponent)
@@ -691,8 +706,9 @@ export default function transform (options: Options): TransformResult {
     )
     return { ast } as TransformResult
   }
-  result = new Transformer(mainClass, options.sourcePath, componentProperies, options.sourceDir!).result
-  result.code = generate(ast).code
+  result = new Transformer(mainClass, options.sourcePath, componentProperies).result
+  const genResult = generate(ast)
+  result.code = genResult.code
   result.ast = ast
   const lessThanSignReg = new RegExp(lessThanSignPlacehold, 'g')
   result.compressedTemplate = result.template

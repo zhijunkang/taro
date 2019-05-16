@@ -53,8 +53,7 @@ describe('基本功能', () => {
             }
           };
         `,
-        isTyped: true,
-        isNormal: true
+        isTyped: true
       })
 
       expect(() => generate(ast)).not.toThrow()

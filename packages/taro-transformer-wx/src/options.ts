@@ -7,16 +7,16 @@ import { isTestEnv } from './env'
 export interface Options {
   isRoot?: boolean,
   isApp: boolean,
-  outputPath: string,
+  // outputPath: string,
   sourcePath: string,
-  sourceDir?: string,
+  // sourceDir?: string,
   code: string,
   isTyped: boolean,
-  isNormal?: boolean,
-  env?: object,
+  // isNormal?: boolean,
+  env?: Object,
   adapter?: Adapters,
   jsxAttributeNameReplace?: Object,
-  rootProps?: object
+  rootProps?: Object
 }
 
 export const transformOptions: Options = {} as any
@@ -29,8 +29,15 @@ export const setTransformOptions = (options: Options) => {
   }
 }
 
+export let isNormal = true
+
+export function setIsNormal (bool: boolean) {
+  isNormal = bool
+}
+
 export const buildBabelTransformOptions: () => TransformOptions = () => {
   return {
+    sourceMaps: 'both',
     parserOpts: {
       sourceType: 'module',
       plugins: [
@@ -55,7 +62,7 @@ export const buildBabelTransformOptions: () => TransformOptions = () => {
       require('babel-plugin-transform-flow-strip-types'),
       functionalComponent,
       [require('babel-plugin-transform-define').default, transformOptions.env]
-    ].concat(process.env.ESLINT === 'false' || transformOptions.isNormal || transformOptions.isTyped ? [] : eslintValidation)
+    ].concat(process.env.ESLINT === 'false' || transformOptions.isTyped ? [] : eslintValidation)
     .concat((isTestEnv) ? [] : require('babel-plugin-remove-dead-code').default)
   }
 }

@@ -11,8 +11,10 @@
     "index.js",
     "lib",
     "cli.js",
-    "dist"
+    "dist",
+    "src"
   ],
+  "types": "src/index.ts",
   "scripts": {
     "test:cov": "jest --coverage && npm run lint",
     "test": "jest",

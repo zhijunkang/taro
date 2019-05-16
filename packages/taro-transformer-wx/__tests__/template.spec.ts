@@ -12,7 +12,6 @@ describe('Template', () => {
     test('简单情况', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View style={{ color: 'red' }} />
@@ -31,7 +30,6 @@ describe('Template', () => {
     test('key 有 - 符号', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View style={{ 'fontSize': '16px' }} />
@@ -50,7 +48,6 @@ describe('Template', () => {
     test('多个对象', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View style={{ 'fontSize': '16px', color: 'red' }} />
@@ -71,7 +68,6 @@ describe('Template', () => {
     test('不转换字符串', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View style={'color: red'} />
@@ -88,7 +84,6 @@ describe('Template', () => {
     test('不转换字符串 literal', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View style='color: red' />
@@ -105,7 +100,6 @@ describe('Template', () => {
     test('不转换字符串想加', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View style={'color:' + 'red'} />
@@ -122,7 +116,6 @@ describe('Template', () => {
     test('转换变量', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const style = 'color:' + 'red'
           return (
@@ -143,7 +136,6 @@ describe('Template', () => {
     test('不转换自定义组件', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const style = 'color:' + 'red'
           return (
@@ -166,7 +158,6 @@ describe('Template', () => {
     test('能在循环中使用, 无 return', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const array = ['test1', 'test2', 'test3']
           return (
@@ -189,7 +180,6 @@ describe('Template', () => {
     test('能在循环中使用, 有 return', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const array = ['test1', 'test2', 'test3']
           return (
@@ -214,7 +204,6 @@ describe('Template', () => {
     test('能在多层循环中使用', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const array = [{ list: [{}] }]
           return (
@@ -255,7 +244,6 @@ describe('Template', () => {
     test('能在多层循环中使用 2', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const array = [{ list: [{}] }]
           let a2 = ['test1', 'test2', 'test3']
@@ -304,7 +292,6 @@ describe('Template', () => {
     expect(() => {
       transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return <View.A />
         `)
@@ -316,7 +303,6 @@ describe('Template', () => {
     test('可以直接使用 this.state ', () => {
       const { template, ast } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(
           `
           return (
@@ -338,7 +324,6 @@ describe('Template', () => {
     test('可以使用 props ', () => {
       const { template } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(
           `
           return (
@@ -358,7 +343,6 @@ describe('Template', () => {
     test('使用标识符', () => {
       const { template, code, ast } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(
           `
           const { list, index } = this.state
@@ -383,7 +367,6 @@ describe('Template', () => {
     expect(() => {
       transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return <View {...this.props.a} />
         `)
@@ -395,7 +378,6 @@ describe('Template', () => {
     test('单驼峰内置组件', () => {
       const { template } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return <View />
         `)
@@ -407,7 +389,6 @@ describe('Template', () => {
     test('双驼峰内置组件', () => {
       const { template } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return <ScrollView />
         `)
@@ -419,7 +400,6 @@ describe('Template', () => {
     test('className 变为 class', () => {
       const { template } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return <ScrollView className='a' />
         `)
@@ -431,7 +411,6 @@ describe('Template', () => {
     test('expression 有多个 this.props.xx 成员表达式', () => {
       const { template, code, ast } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return <ScrollView className={this.props.iconList && this.props.iconList.length > 3 ? 'iconlist_wrap' : 'iconlist_wrap wrap-less'} />
         `)
@@ -450,7 +429,6 @@ describe('Template', () => {
       test('内置组件', () => {
         const { template } = transform({
           ...baseOptions,
-          isRoot: true,
           code: buildComponent(`
             return <ScrollView hidden />
           `)
@@ -464,7 +442,6 @@ describe('Template', () => {
       test('直接写值', () => {
         const { template } = transform({
           ...baseOptions,
-          isRoot: true,
           code: buildComponent(`
             return <ScrollView hidden={true} />
           `)
@@ -478,7 +455,6 @@ describe('Template', () => {
       test('内置组件 + 特殊 props', () => {
         const { template } = transform({
           ...baseOptions,
-          isRoot: true,
           code: buildComponent(`
             return <ScrollView scrollX />
           `)
@@ -492,7 +468,6 @@ describe('Template', () => {
       test('内置组件 + 特殊 props + 直接写值', () => {
         const { template } = transform({
           ...baseOptions,
-          isRoot: true,
           code: buildComponent(`
             return <ScrollView scrollX={true} />
           `)
@@ -506,7 +481,6 @@ describe('Template', () => {
       test('内置组件 2', () => {
         const { template } = transform({
           ...baseOptions,
-          isRoot: true,
           code: buildComponent(`
             return <View hidden />
           `)
@@ -518,7 +492,6 @@ describe('Template', () => {
       test('自定义组件不写值', () => {
         const { template, code, ast } = transform({
           ...baseOptions,
-          isRoot: true,
           code: buildComponent(
             `
             return <Custom hidden />
@@ -540,7 +513,6 @@ describe('Template', () => {
       test('自定义组件循环', () => {
         const { template, code, ast } = transform({
           ...baseOptions,
-          isRoot: true,
           code: buildComponent(
             `
             const array = [1, 2, 3]
@@ -574,7 +546,6 @@ describe('Template', () => {
     test('驼峰式应该变为下划线式', () => {
       const { template, ast } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return <View hoverClass='test' />
         `)
@@ -587,7 +558,6 @@ describe('Template', () => {
       test('逻辑表达式破坏引用', () => {
         const { template, ast } = transform({
           ...baseOptions,
-          isRoot: true,
           code: buildComponent(`
           const numbers =[...Array(10).keys()]
           const listItems = numbers.map((number) => {
@@ -673,7 +643,6 @@ describe('Template', () => {
     // test('本来是下划线不用再转', () => {
     //   const { template } = transform({
     //     ...baseOptions,
-    //     isRoot: true,
     //     code: buildComponent(`
     //      return <View className='index'>
     //       { [0, 1, 2, 3].map(i => <Text key={i}>{ i }</Text>) }
@@ -690,7 +659,6 @@ describe('字符不转义', () => {
   test('在 jsx attr 中', () => {
     const { template, ast, code } = transform({
       ...baseOptions,
-      isRoot: true,
       code: buildComponent(`
           return (
             <View className={'中文' + '测试'} />
@@ -710,7 +678,6 @@ describe('字符不转义', () => {
   test('在 jsx children 中', () => {
     const { template, ast, code } = transform({
       ...baseOptions,
-      isRoot: true,
       code: buildComponent(`
           return (
             <View>中文 测试</View>
@@ -730,7 +697,6 @@ describe('字符不转义', () => {
   test('在 jsx children 中使用 jsx expression container', () => {
     const { template, ast, code } = transform({
       ...baseOptions,
-      isRoot: true,
       code: buildComponent(`
           return (
             <View>{ '中文' + '测试' }</View>
@@ -751,7 +717,6 @@ describe('字符不转义', () => {
     test('input', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <Input></Input>
@@ -771,7 +736,6 @@ describe('字符不转义', () => {
     test('image', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <Image></Image>
@@ -791,7 +755,6 @@ describe('字符不转义', () => {
     test('import', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <Import></Import>
@@ -811,7 +774,6 @@ describe('字符不转义', () => {
     test('link', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <Link />
@@ -831,7 +793,6 @@ describe('字符不转义', () => {
     test('同一个作用域的JSX 变量延时赋值没有意义', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           let a;
           a = <Text />
@@ -855,7 +816,6 @@ describe('字符不转义', () => {
     test('array of array', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View test={[{}]} />
@@ -871,7 +831,6 @@ describe('字符不转义', () => {
     test('array of array', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View test={[[]]} />
@@ -887,7 +846,6 @@ describe('字符不转义', () => {
     test('function', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View test={escape('')} />
@@ -903,7 +861,6 @@ describe('字符不转义', () => {
     test('function', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View test={escape('')} />

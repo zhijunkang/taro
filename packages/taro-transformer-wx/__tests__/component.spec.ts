@@ -2,7 +2,7 @@ import transform from '../src'
 import { buildComponent, baseCode, baseOptions, evalClass, Custom } from './utils'
 import { isObject } from 'lodash'
 
-describe('components', () => {
+describe.skip('components', () => {
   test('components 一直存在并且是一个数组', () => {
     const { components } = transform({
       ...baseOptions,

@@ -12,7 +12,6 @@ describe('类函数式组件', () => {
     test('简单情况', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const array = [{ list: [] }]
           return (
@@ -44,7 +43,6 @@ describe('类函数式组件', () => {
     test('命名为变量', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const test = this.renderTest()
           return (
@@ -77,7 +75,6 @@ describe('类函数式组件', () => {
     test('循环', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const test = this.renderTest()
           return (
@@ -115,7 +112,6 @@ describe('类函数式组件', () => {
     test('在循环中直接 return', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const test = this.renderTest()
           return (
@@ -152,7 +148,6 @@ describe('类函数式组件', () => {
     test('简单情况', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const array = [{ list: [] }]
           return (
@@ -184,7 +179,6 @@ describe('类函数式组件', () => {
     test('命名为变量', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const test = this.renderTest([])
           return (
@@ -217,7 +211,6 @@ describe('类函数式组件', () => {
     test('循环', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View>{this.state.tasks.map(i => {
@@ -253,7 +246,6 @@ describe('类函数式组件', () => {
     test('在循环中直接 return', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const test = this.renderTest()
           return (
@@ -291,7 +283,6 @@ describe('函数式组件', () => {
     test('无参数传入', () => {
       const { template, ast,code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: `function Test () {
           const tasks = []
           if (tasks !== null) {
@@ -326,7 +317,6 @@ describe('函数式组件', () => {
     test('传入一个参数', () => {
       const { template, ast,code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: `function Test (props) {
           const { tasks } = props
           if (tasks !== null) {
@@ -357,7 +347,6 @@ describe('函数式组件', () => {
     test('传入对象解构参数', () => {
       const { template, ast,code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: `function Test ({ tasks }) {
           if (tasks !== null) {
             return <View className='page-body' >
@@ -388,7 +377,6 @@ describe('函数式组件', () => {
       expect(() => {
         transform({
           ...baseOptions,
-          isRoot: true,
           code: `function Test ([a]) {
             if (tasks !== null) {
               return <View className='page-body' >
@@ -409,7 +397,6 @@ describe('函数式组件', () => {
       expect(() => {
         transform({
           ...baseOptions,
-          isRoot: true,
           code: `function Test (a, b) {
             if (tasks !== null) {
               return <View className='page-body' >
@@ -431,7 +418,6 @@ describe('函数式组件', () => {
     test('无参数传入', () => {
       const { template, ast,code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: `const Test = () => {
           const tasks = []
           if (tasks !== null) {
@@ -466,7 +452,6 @@ describe('函数式组件', () => {
     test('传入一个参数', () => {
       const { template, ast,code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: `const Test = (props) => {
           const { tasks } = props
           if (tasks !== null) {
@@ -497,7 +482,6 @@ describe('函数式组件', () => {
     test('传入对象解构参数', () => {
       const { template, ast,code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: `const Test = ({ tasks }) => {
           if (tasks !== null) {
             return <View className='page-body' >
@@ -528,7 +512,6 @@ describe('函数式组件', () => {
       expect(() => {
         transform({
           ...baseOptions,
-          isRoot: true,
           code: `const Test = ([a]) => {
             if (tasks !== null) {
               return <View className='page-body' >
@@ -549,7 +532,6 @@ describe('函数式组件', () => {
       expect(() => {
         transform({
           ...baseOptions,
-          isRoot: true,
           code: `const Test = (a, b) => {
             if (tasks !== null) {
               return <View className='page-body' >
@@ -572,7 +554,6 @@ describe('闭包函数表达式', () => {
   test('basic', () => {
     const { template, ast,code } = transform({
       ...baseOptions,
-      isRoot: true,
       code: `const Test = (a) => {
         const renderTest = () => {
           return <View />
@@ -603,7 +584,6 @@ describe('闭包函数表达式', () => {
   test('basic2', () => {
     const { template, ast,code } = transform({
       ...baseOptions,
-      isRoot: true,
       code: `function Test() {
         const renderTest = () => {
           return <View />
@@ -634,7 +614,6 @@ describe('闭包函数表达式', () => {
   test('basic3', () => {
     const { template, ast, code } = transform({
       ...baseOptions,
-      isRoot: true,
       code: buildComponent(`
       const renderTest = () => {
         return <View />
@@ -665,7 +644,6 @@ describe('闭包函数表达式', () => {
   test('可以接受多个参数', () => {
     const { template, ast, code } = transform({
       ...baseOptions,
-      isRoot: true,
       code: buildComponent(`
       const renderTest = (a, b) => {
         return <View a={a} b={b} />
@@ -697,7 +675,6 @@ describe('闭包函数表达式', () => {
     expect(() => {
       transform({
         ...baseOptions,
-        isRoot: true,
         code: `function Test() {
           function renderTest() {
             return <View />
@@ -717,7 +694,6 @@ describe('闭包函数表达式', () => {
     expect(() => {
       transform({
         ...baseOptions,
-        isRoot: true,
         code: `
         function Test() {
           function renderTest() {
@@ -739,7 +715,6 @@ describe('闭包函数表达式', () => {
     expect(() => {
       transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
         function renderTest () {
           return <View />

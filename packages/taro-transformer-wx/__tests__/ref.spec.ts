@@ -6,7 +6,6 @@ describe('ref', () => {
     test('字符串', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View ref='a' />
@@ -25,7 +24,6 @@ describe('ref', () => {
     test('自定义组件', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <Custom ref='a' />
@@ -44,7 +42,6 @@ describe('ref', () => {
     test('字符串模板', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View ref={\`a\`} />
@@ -63,7 +60,6 @@ describe('ref', () => {
     test('inline 函数', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View ref={() => this.ref = ''} />
@@ -83,7 +79,6 @@ describe('ref', () => {
     test('函数', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           return (
             <View ref={this.mapView} />
@@ -105,7 +100,6 @@ describe('ref', () => {
     test('内置组件', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const array = [{ list: [] }, { list: [] }]
           return (
@@ -125,7 +119,6 @@ describe('ref', () => {
     test('内置组件 + 其它复杂表达式', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const array = [{ list: [] }, { list: [] }]
           return (
@@ -143,7 +136,6 @@ describe('ref', () => {
     test('自定义组件组件', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const array = [{ list: [] }, { list: [] }]
           return (
@@ -171,7 +163,6 @@ describe('ref', () => {
     test('内置组件多重循环', () => {
       const { template, ast, code } = transform({
         ...baseOptions,
-        isRoot: true,
         code: buildComponent(`
           const array = [{ list: ['', ''] }, { list: [''] }]
           return (

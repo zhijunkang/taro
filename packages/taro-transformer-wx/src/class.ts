@@ -1,6 +1,5 @@
 import { NodePath } from 'babel-traverse'
 import * as t from 'babel-types'
-import { extname, sep } from 'path'
 import {
   codeFrameError,
   hasComplexExpression,
@@ -115,7 +114,6 @@ class Transformer {
   private usedState = new Set<string>()
   private componentProperies: Set<string>
   private sourcePath: string
-  private sourceDir: string
   private refs: Ref[] = []
   private loopRefs: Map<t.JSXElement, LoopRef> = new Map()
   private anonymousFuncCounter = incrementId()
@@ -123,12 +121,10 @@ class Transformer {
   constructor (
     path: NodePath<t.ClassDeclaration>,
     sourcePath: string,
-    componentProperies: string[],
-    sourceDir: string
+    componentProperies: string[]
   ) {
     this.classPath = path
     this.sourcePath = sourcePath
-    this.sourceDir = sourceDir
     this.moduleNames = Object.keys(path.scope.getAllBindings('module'))
     this.componentProperies = new Set(componentProperies)
     this.compile()
@@ -207,17 +203,6 @@ class Transformer {
     }
   }
 
-  setComponentPath () {
-    let componentPath = this.sourcePath.replace(this.sourceDir, '')
-    componentPath = componentPath.replace(extname(componentPath), '')
-    componentPath = componentPath.split(sep).join('/')
-    if (componentPath.startsWith('/')) {
-      componentPath = componentPath.slice(1)
-    }
-    const $$componentPath: any = t.classProperty(t.identifier('$$componentPath'), t.stringLiteral(componentPath))
-    $$componentPath.static = true
-    this.classPath.node.body.body.push($$componentPath)
-  }
 
   buildAnonyMousFunc = (jsxExpr: NodePath<t.JSXExpressionContainer>, attr: NodePath<t.JSXAttribute>, expr: t.Expression) => {
     const exprPath = attr.get('value.expression')
@@ -1005,7 +990,6 @@ class Transformer {
     this.findMoreProps()
     this.handleRefs()
     this.parseRender()
-    this.setComponentPath()
     this.clearClosureMethods()
     this.result.componentProperies = [...this.componentProperies]
   }
