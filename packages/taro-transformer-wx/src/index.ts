@@ -178,13 +178,12 @@ function handleThirdPartyComponent (expr: t.ClassMethod | t.ClassProperty) {
     }
   }
 }
-
-export interface Result {
+interface Result {
   template?: string
   componentProperies?: string[]
 }
 
-interface TransformResult extends Result {
+export interface TransformResult extends Result {
   ast: t.File
   code?: string
   imageSrcs?: string
@@ -197,7 +196,11 @@ interface TransformResult extends Result {
   }[],
 }
 
-export default function transform (options: Options): TransformResult {
+export interface TransformOptions extends Options {
+  //
+}
+
+export default function transform (options: TransformOptions): TransformResult {
   if (options.adapter) {
     setAdapter(options.adapter)
     if (Adapter.type === Adapters.quickapp) {
