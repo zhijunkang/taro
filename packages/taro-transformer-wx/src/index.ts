@@ -212,6 +212,13 @@ export default function transform (options: Options): TransformResult {
     setLoopCallee('anonymousCallee_')
     setLoopState('loopState')
   }
+  const defaultResult: TransformResult = {
+    ast: {} as any,
+    code: '',
+    imageSrcs: '',
+    compressedTemplate: '',
+    components: []
+  }
   THIRD_PARTY_COMPONENTS.clear()
   const code = options.isTyped
     ? ts.transpile(options.code, {
@@ -253,7 +260,12 @@ export default function transform (options: Options): TransformResult {
         resetTSClassProperty(mainClassNode.body.body)
       }
     }
-    return { ast } as any
+    const code = generate(ast).code
+    return {
+      ...defaultResult,
+      ast,
+      code
+    }
   }
   // transformFromAst(ast, code)
   let result
@@ -679,7 +691,12 @@ export default function transform (options: Options): TransformResult {
   }
 
   if (!mainClass) {
-    return { ast } as any
+    const code = generate(ast).code
+    return {
+      ...defaultResult,
+      ast,
+      code
+    }
   }
 
   mainClass.node.body.body.forEach(handleThirdPartyComponent)
@@ -704,7 +721,12 @@ export default function transform (options: Options): TransformResult {
     renderMethod.replaceWith(
       t.classMethod('method', t.identifier('_createData'), [], t.blockStatement([]))
     )
-    return { ast } as TransformResult
+    const code = generate(ast).code
+    return {
+      ...defaultResult,
+      ast,
+      code
+    }
   }
   result = new Transformer(mainClass, options.sourcePath, componentProperies).result
   const genResult = generate(ast)
